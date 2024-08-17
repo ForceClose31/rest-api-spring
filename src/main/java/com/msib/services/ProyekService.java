@@ -11,6 +11,7 @@ import com.msib.repos.ProyekRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProyekService {
@@ -37,6 +38,10 @@ public class ProyekService {
         }
 
         return proyekRepository.save(proyek);
+    }
+
+    public Optional<Proyek> getProyekById(Integer id){
+        return proyekRepository.findById(id);
     }
 
     public Proyek updateProyek(Proyek proyek) {

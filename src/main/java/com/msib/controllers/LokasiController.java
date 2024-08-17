@@ -8,10 +8,12 @@ import com.msib.models.Lokasi;
 import com.msib.services.LokasiService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/lokasi")
 public class LokasiController {
+
     @Autowired
     private LokasiService lokasiService;
 
@@ -23,6 +25,13 @@ public class LokasiController {
     @GetMapping
     public ResponseEntity<List<Lokasi>> getAllLokasi() {
         return ResponseEntity.ok(lokasiService.getAllLokasi());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Lokasi> getLokasiById(@PathVariable Integer id) {
+        Optional<Lokasi> lokasi = lokasiService.getLokasiById(id);
+        return lokasi.map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")

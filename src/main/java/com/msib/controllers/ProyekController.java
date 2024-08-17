@@ -8,10 +8,12 @@ import com.msib.models.Proyek;
 import com.msib.services.ProyekService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/proyek")
 public class ProyekController {
+
     @Autowired
     private ProyekService proyekService;
 
@@ -23,6 +25,13 @@ public class ProyekController {
     @GetMapping
     public ResponseEntity<List<Proyek>> getAllProyek() {
         return ResponseEntity.ok(proyekService.getAllProyek());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Proyek> getProyekById(@PathVariable Integer id) {
+        Optional<Proyek> proyek = proyekService.getProyekById(id);
+        return proyek.map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
