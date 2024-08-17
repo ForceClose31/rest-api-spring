@@ -20,8 +20,15 @@ public class LokasiService {
     }
 
     public Lokasi saveLokasi(Lokasi lokasi) {
+        if (lokasi.getNamaLokasi() == null || lokasi.getNegara() == null) {
+            throw new IllegalArgumentException("NamaLokasi and Negara cannot be null");
+        }
         lokasi.setCreatedAt(LocalDateTime.now());
-        return lokasiRepository.save(lokasi);
+        try {
+            return lokasiRepository.save(lokasi);
+        } catch (Exception e) {
+            throw new RuntimeException("Error saving lokasi", e);
+        }
     }
 
     public Optional<Lokasi> getLokasiById(Integer id) {
