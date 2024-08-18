@@ -44,7 +44,17 @@ public class ProyekService {
         return proyekRepository.findById(id);
     }
 
-    public Proyek updateProyek(Proyek proyek) {
+    public Proyek updateProyek(Proyek proyek, List<Integer> lokasiIds) {
+        proyek.getProyekLokasi().clear();
+
+        for (Integer lokasiId : lokasiIds) {
+            Lokasi lokasi = lokasiRepository.findById(lokasiId).orElseThrow();
+            ProyekLokasi proyekLokasi = new ProyekLokasi();
+            proyekLokasi.setProyek(proyek);
+            proyekLokasi.setLokasi(lokasi);
+            proyek.getProyekLokasi().add(proyekLokasi);
+        }
+
         return proyekRepository.save(proyek);
     }
 

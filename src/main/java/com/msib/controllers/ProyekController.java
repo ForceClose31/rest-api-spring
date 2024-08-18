@@ -70,9 +70,40 @@ public class ProyekController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Proyek> updateProyek(@PathVariable Integer id, @RequestBody Proyek proyek) {
-        proyek.setId(id);
-        return ResponseEntity.ok(proyekService.updateProyek(proyek));
+    public ResponseEntity<Proyek> updateProyek(@PathVariable Integer id, @RequestBody String payload) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                    .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+            String unescapedPayload = objectMapper.readValue(payload, String.class);
+
+            JsonNode rootNode = objectMapper.readTree(unescapedPayload);
+            JsonNode proyekNode = rootNode.path("proyek");
+            JsonNode lokasiIdsNode = rootNode.path("lokasiIds");
+
+            Proyek proyek = new Proyek();
+            proyek.setId(id);
+            proyek.setNamaProyek(proyekNode.path("namaProyek").asText());
+            proyek.setClient(proyekNode.path("client").asText());
+            proyek.setTglMulai(proyekNode.path("tglMulai").asText());
+            proyek.setTglSelesai(proyekNode.path("tglSelesai").asText());
+            proyek.setPimpinanProyek(proyekNode.path("pimpinanProyek").asText());
+            proyek.setKeterangan(proyekNode.path("keterangan").asText());
+
+            List<Integer> lokasiIdsList = new ArrayList<>();
+            if (lokasiIdsNode.isArray()) {
+                Iterator<JsonNode> elements = lokasiIdsNode.elements();
+                while (elements.hasNext()) {
+                    JsonNode element = elements.next();
+                    lokasiIdsList.add(element.path("id").asInt());
+                }
+            }
+
+            return ResponseEntity.ok(proyekService.updateProyek(proyek, lokasiIdsList));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{id}")
