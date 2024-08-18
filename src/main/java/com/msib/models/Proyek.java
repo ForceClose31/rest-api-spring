@@ -2,7 +2,10 @@ package com.msib.models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Proyek {
@@ -12,14 +15,17 @@ public class Proyek {
 
     private String namaProyek;
     private String client;
-    private LocalDateTime tglMulai;
-    private LocalDateTime tglSelesai;
+    private String tglMulai;
+    private String tglSelesai;
     private String pimpinanProyek;
     private String keterangan;
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "proyek", cascade = CascadeType.ALL)
-    private List<ProyekLokasi> proyekLokasi;
+
+    @OneToMany(mappedBy = "proyek", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ProyekLokasi> proyekLokasi = new ArrayList<>(); 
+
 
     public Integer getId() {
         return id;
@@ -45,20 +51,20 @@ public class Proyek {
         this.client = client;
     }
 
-    public LocalDateTime getTglMulai() {
+    public String getTglMulai() {
         return tglMulai;
     }
 
-    public void setTglMulai(LocalDateTime tglMulai) {
-        this.tglMulai = tglMulai;
+    public void setTglMulai(String string) {
+        this.tglMulai = string;
     }
 
-    public LocalDateTime getTglSelesai() {
+    public String getTglSelesai() {
         return tglSelesai;
     }
 
-    public void setTglSelesai(LocalDateTime tglSelesai) {
-        this.tglSelesai = tglSelesai;
+    public void setTglSelesai(String string) {
+        this.tglSelesai = string;
     }
 
     public String getPimpinanProyek() {

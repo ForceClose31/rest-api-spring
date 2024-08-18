@@ -34,13 +34,13 @@ public class ProyekService {
             ProyekLokasi proyekLokasi = new ProyekLokasi();
             proyekLokasi.setProyek(savedProyek);
             proyekLokasi.setLokasi(lokasi);
-            proyek.getProyekLokasi().add(proyekLokasi);
+            savedProyek.getProyekLokasi().add(proyekLokasi);
         }
 
-        return proyekRepository.save(proyek);
+        return proyekRepository.save(savedProyek);
     }
 
-    public Optional<Proyek> getProyekById(Integer id){
+    public Optional<Proyek> getProyekById(Integer id) {
         return proyekRepository.findById(id);
     }
 

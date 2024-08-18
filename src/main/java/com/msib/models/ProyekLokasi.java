@@ -1,5 +1,7 @@
 package com.msib.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -10,6 +12,7 @@ public class ProyekLokasi {
 
     @ManyToOne
     @JoinColumn(name = "proyek_id")
+    @JsonBackReference
     private Proyek proyek;
 
     @ManyToOne
