@@ -28,9 +28,15 @@ public class ProyekController {
             ObjectMapper objectMapper = new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                     .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-            String unescapedPayload = objectMapper.readValue(payload, String.class);
 
-            JsonNode rootNode = objectMapper.readTree(unescapedPayload);
+            JsonNode rootNode;
+            try {
+                String unescapedPayload = objectMapper.readValue(payload, String.class);
+                rootNode = objectMapper.readTree(unescapedPayload);
+            } catch (Exception e) {
+                rootNode = objectMapper.readTree(payload);
+            }
+
             JsonNode proyekNode = rootNode.path("proyek");
             JsonNode lokasiIdsNode = rootNode.path("lokasiIds");
 
@@ -57,27 +63,21 @@ public class ProyekController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<Proyek>> getAllProyek() {
-        return ResponseEntity.ok(proyekService.getAllProyek());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Proyek> getProyekById(@PathVariable Integer id) {
-        Optional<Proyek> proyek = proyekService.getProyekById(id);
-        return proyek.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<Proyek> updateProyek(@PathVariable Integer id, @RequestBody String payload) {
         try {
             ObjectMapper objectMapper = new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                     .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-            String unescapedPayload = objectMapper.readValue(payload, String.class);
 
-            JsonNode rootNode = objectMapper.readTree(unescapedPayload);
+            JsonNode rootNode;
+            try {
+                String unescapedPayload = objectMapper.readValue(payload, String.class);
+                rootNode = objectMapper.readTree(unescapedPayload);
+            } catch (Exception e) {
+                rootNode = objectMapper.readTree(payload);
+            }
+
             JsonNode proyekNode = rootNode.path("proyek");
             JsonNode lokasiIdsNode = rootNode.path("lokasiIds");
 
@@ -104,6 +104,18 @@ public class ProyekController {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Proyek>> getAllProyek() {
+        return ResponseEntity.ok(proyekService.getAllProyek());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Proyek> getProyekById(@PathVariable Integer id) {
+        Optional<Proyek> proyek = proyekService.getProyekById(id);
+        return proyek.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
